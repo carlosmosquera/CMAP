@@ -40,6 +40,8 @@
         public Transform slidersParent; // Reference to the parent of all sliders
 
 
+
+
         private IEnumerator DelayedSendPosition()
         {
             yield return new WaitForSeconds(0.5f); // Delay of 0.1 seconds (adjust if necessary)
@@ -296,31 +298,7 @@
             }
         }
 
-        void SelectSliderText(TMP_Text text)
-        {
-            Debug.Log("SelectSliderText called");
-            int index = sliderTexts.IndexOf(text);
-            Debug.Log($"Index of clicked text: {index}");
 
-            if (index != -1)
-            {
-                Debug.Log("Valid index found, highlighting text");
-
-                // Highlight the text
-                if (lastSelectedSliderText != null)
-                {
-                    lastSelectedSliderText.color = Color.white; // Revert previous slider text to black
-                }
-
-                lastSelectedSliderText = sliderTexts[index];
-                lastSelectedSliderText.color = Color.blue; // Highlighted
-                Debug.Log($"Highlighting slider text for object {index + 1}");
-            }
-            else
-            {
-                Debug.LogWarning($"Index {index} is invalid or not found in sliderTexts");
-            }
-        }
 
         void HighlightObjectWithoutDragging(CircularObject obj)
         {
@@ -364,50 +342,89 @@
         }
 
 
-        void SelectObject(CircularObject obj)
+    void SelectObject(CircularObject obj)
+    {
+        if (lastSelectedObject != null && lastSelectedObject != obj)
         {
-            if (lastSelectedObject != null && lastSelectedObject != obj)
-            {
-                // Revert the color and sorting order of the previously selected object
-                lastSelectedObject.spriteRenderer.color = Color.grey; // Unselected
-                lastSelectedObject.spriteRenderer.sortingOrder = 8; // Reset sorting order to original value
+            // Revert the color and sorting order of the previously selected object
+            lastSelectedObject.spriteRenderer.color = Color.grey; // Unselected
+            lastSelectedObject.spriteRenderer.sortingOrder = 8; // Reset sorting order to original value
 
-                // Change the color of the previously selected TextMeshPro back to white
-                Transform numberTransform = lastSelectedObject.objectTransform.Find("Number");
-                if (numberTransform != null)
+            // Change the color of the previously selected TextMeshPro back to black
+            Transform numberTransform = lastSelectedObject.objectTransform.Find("Number");
+            if (numberTransform != null)
+            {
+                var textMeshPro = numberTransform.GetComponent<TextMeshPro>();
+                if (textMeshPro != null)
                 {
-                    var textMeshPro = numberTransform.GetComponent<TextMeshPro>();
-                    if (textMeshPro != null)
-                    {
-                        textMeshPro.color = Color.black; // Deselect text
-                        textMeshPro.sortingOrder = 9; // Lower sorting order
-                    }
+                    textMeshPro.color = Color.black; // Deselect text
+                    textMeshPro.sortingOrder = 9; // Lower sorting order
                 }
             }
-
-            // Highlight the current selected object
-            obj.spriteRenderer.color = Color.blue; // highlighted
-            obj.spriteRenderer.material.SetFloat("_Glossiness", 0.4f); // Optional: Add glossiness for effect
-            obj.spriteRenderer.sortingOrder = 11; // Set higher sorting order to bring it on top
-
-            // Change the color of the currently selected TextMeshPro to black
-            Transform currentNumberTransform = obj.objectTransform.Find("Number");
-            if (currentNumberTransform != null)
-            {
-                var currentTextMeshPro = currentNumberTransform.GetComponent<TextMeshPro>();
-                if (currentTextMeshPro != null)
-                {
-                    currentTextMeshPro.color = Color.white; // Select text
-                    currentTextMeshPro.sortingOrder = 12; // Higher sorting order to keep text on top
-                }
-            }
-
-            lastSelectedObject = obj; // Update the last selected object
-            obj.isDragging = true; // Enable dragging for the selected object
         }
 
+        // Highlight the current selected object
+        obj.spriteRenderer.color = Color.blue; // highlighted
+        obj.spriteRenderer.material.SetFloat("_Glossiness", 0.4f); // Optional: Add glossiness for effect
+        obj.spriteRenderer.sortingOrder = 11; // Set higher sorting order to bring it on top
 
-        void SnapObjectsToClosestAngle()
+        // Change the color of the currently selected TextMeshPro to black
+        Transform currentNumberTransform = obj.objectTransform.Find("Number");
+        if (currentNumberTransform != null)
+        {
+            var currentTextMeshPro = currentNumberTransform.GetComponent<TextMeshPro>();
+            if (currentTextMeshPro != null)
+            {
+                currentTextMeshPro.color = Color.white; // Select text
+                currentTextMeshPro.sortingOrder = 12; // Higher sorting order to keep text on top
+            }
+        }
+
+        // Select the corresponding slider text
+        int objIndex = circularObjects.IndexOf(obj);
+        if (objIndex != -1 && objIndex < sliderTexts.Count)
+        {
+            SelectSliderText(sliderTexts[objIndex]);
+        }
+
+        lastSelectedObject = obj; // Update the last selected object
+        obj.isDragging = true; // Enable dragging for the selected object
+    }
+
+    void SelectSliderText(TMP_Text text)
+    {
+        Debug.Log("SelectSliderText called");
+        int index = sliderTexts.IndexOf(text);
+        Debug.Log($"Index of clicked text: {index}");
+
+        if (index != -1)
+        {
+            Debug.Log("Valid index found, highlighting text");
+
+            // Highlight the text
+            if (lastSelectedSliderText != null)
+            {
+                lastSelectedSliderText.color = Color.white; // Revert previous slider text to black
+            }
+
+            lastSelectedSliderText = sliderTexts[index];
+            lastSelectedSliderText.color = Color.blue; // Highlighted
+            Debug.Log($"Highlighting slider text for object {index + 1}");
+
+            // Highlight the corresponding circular object
+            if (index < circularObjects.Count)
+            {
+                HighlightObjectWithoutDragging(circularObjects[index]);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Index {index} is invalid or not found in sliderTexts");
+        }
+    }
+
+
+    void SnapObjectsToClosestAngle()
         {
             if (lastSelectedObject != null)
             {

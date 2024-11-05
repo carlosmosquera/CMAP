@@ -5,42 +5,43 @@ using extOSC;
 public class SliderOSCController : MonoBehaviour
 {
     private string oscAddress = "/MasterFader";
-    // Set to your desired port
 
     [Header("UI Components")]
     public Slider masterFaderSlider;
+    public Text valueDisplay;  // Reference to a Text UI component to display the dB value
 
     public OSCTransmitter oscTransmitter;
 
     private void Start()
     {
         // Send the initial OSC message with the current slider value
-        SendOSCMessage(masterFaderSlider.value);
-
-        // Add listener to slider to send OSC message when value changes
-        masterFaderSlider.onValueChanged.AddListener(SendOSCMessage);
+        UpdateFaderValue(masterFaderSlider.value);
+        masterFaderSlider.onValueChanged.AddListener(UpdateFaderValue);
     }
 
-    private void SendOSCMessage(float value)
+    private void UpdateFaderValue(float sliderValue)
     {
-        // Create an OSC message with the specified address
+        // Map the slider value (0-1) to the dB range (-70 to 0)
+        float dBValue = Mathf.Lerp(-70, 0, Mathf.Pow(sliderValue, 2));
+
+        // Display the dB value on the canvas
+        valueDisplay.text = $"{dBValue:F1} dB";
+
+        // Send OSC message with the dB value
+        SendOSCMessage(dBValue);
+    }
+
+    private void SendOSCMessage(float dBValue)
+    {
         var message = new OSCMessage(oscAddress);
-
-        // Clamp value to 0.0 - 1.0 range
-        value = Mathf.Clamp(value, 0.0f, 1.0f);
-
-        // Add the slider value to the OSC message
-        message.AddValue(OSCValue.Float(value));
-
-        // Send the message
+        message.AddValue(OSCValue.Float(dBValue));
         oscTransmitter.Send(message);
 
-        Debug.Log(message);
+        Debug.Log($"Sent OSC Message with dB Value: {dBValue}");
     }
 
     private void OnDestroy()
     {
-        // Remove listener to avoid errors when the object is destroyed
-        masterFaderSlider.onValueChanged.RemoveListener(SendOSCMessage);
+        masterFaderSlider.onValueChanged.RemoveListener(UpdateFaderValue);
     }
 }
