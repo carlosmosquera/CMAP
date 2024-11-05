@@ -95,6 +95,11 @@ public class InputMeters : MonoBehaviour
                         soloStates[i] = false; // Turn off other buttons
                         Image otherButtonImage = soloButtons[i].GetComponent<Image>();
                         otherButtonImage.color = Color.white; // Change the color to white
+
+                        // Change the color of the text to white
+                        Text otherButtonText = soloButtons[i].transform.Find("Text").GetComponent<Text>();
+                        otherButtonText.color = Color.white;
+
                         SendSoloOSC(i + 1, 0); // Send OSC message to turn off
                     }
                 }
@@ -105,11 +110,13 @@ public class InputMeters : MonoBehaviour
 
             // Get the Image component of the button to change color
             Image buttonImage = soloButtons[index].GetComponent<Image>();
+            Text buttonText = soloButtons[index].transform.Find("Text").GetComponent<Text>();
 
             if (soloStates[index])
             {
                 // Set button color to green when toggled on
                 buttonImage.color = Color.green;
+                buttonText.color = Color.green; // Set text color to green
                 SendSoloAllOSC(0);
                 SendSoloOSC(index + 1, 1); // Send OSC message with "1" for solo ON
             }
@@ -117,6 +124,7 @@ public class InputMeters : MonoBehaviour
             {
                 // Set button color to white when toggled off
                 buttonImage.color = Color.white;
+                buttonText.color = Color.white; // Set text color to white
                 SendSoloOSC(index + 1, 0); // Send OSC message with "0" for solo OFF
             }
 
@@ -127,6 +135,7 @@ public class InputMeters : MonoBehaviour
             }
         }
     }
+
 
     // Check if any solo button is ON
     private bool AnySoloButtonOn()
@@ -154,7 +163,6 @@ public class InputMeters : MonoBehaviour
         return true; // All buttons are OFF
     }
 
-    // Clear all Solo buttons
     private void ClearSolo()
     {
         for (int i = 0; i < soloButtons.Count; i++)
@@ -166,6 +174,10 @@ public class InputMeters : MonoBehaviour
             Image buttonImage = soloButtons[i].GetComponent<Image>();
             buttonImage.color = Color.white; // Set to white for OFF state
 
+            // Get the Text component of the button to change color
+            Text buttonText = soloButtons[i].transform.Find("Text").GetComponent<Text>();
+            buttonText.color = Color.white; // Set text color to white for OFF state
+
             // Send OSC message for each channel to indicate it is OFF
             SendSoloOSC(i + 1, 0); // Send OSC message with "0" for solo OFF
         }
@@ -173,6 +185,7 @@ public class InputMeters : MonoBehaviour
         // Send "/soloAll" with argument "1" after all buttons are turned off
         SendSoloAllOSC(1);
     }
+
 
     // Send OSC message for solo
     private void SendSoloOSC(int channelNumber, int state)

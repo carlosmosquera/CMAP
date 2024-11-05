@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using extOSC;
 
-public class SliderOSCController : MonoBehaviour
+public class SliderOSCControllerReverb : MonoBehaviour
 {
-    private string oscAddress = "/MasterFader";
+    private string oscAddress = "/ReverbFader";
     // Set to your desired port
 
     [Header("UI Components")]
