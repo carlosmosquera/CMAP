@@ -122,7 +122,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
             TextMeshPro textMesh = numberObject.AddComponent<TextMeshPro>();
             textMesh.text = (i + 1).ToString();
             textMesh.fontSize = 3;
-            textMesh.color = Color.white;
+            textMesh.color = Color.black;
             textMesh.alignment = TextAlignmentOptions.Center;
             textMesh.sortingOrder = 12; // Ensure text is always on top
 
@@ -140,7 +140,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
             }
 
             // Set the initial appearance of the circular object
-            obj.spriteRenderer.color = new Color(0.2830189f, 0.1081346f, 0.1081346f); // Unselected
+            obj.spriteRenderer.color = Color.grey; // Unselected
             obj.spriteRenderer.sortingOrder = 8;
 
 
@@ -251,7 +251,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
                     // Keep the darker color for the currently selected object
                     if (obj == lastSelectedObject)
                     {
-                        obj.spriteRenderer.color = new Color(1.0f, 0.8591049f, 0.0f); // highlighted
+                        obj.spriteRenderer.color = Color.blue; // highlighted
                     }
                     else
                     {
@@ -312,7 +312,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
             }
 
             lastSelectedSliderText = sliderTexts[index];
-            lastSelectedSliderText.color = new Color(1.0f, 0.8591049f, 0.0f); // Highlighted
+            lastSelectedSliderText.color = Color.blue; // Highlighted
             Debug.Log($"Highlighting slider text for object {index + 1}");
         }
         else
@@ -326,7 +326,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
         if (lastSelectedObject != null && lastSelectedObject != obj)
         {
             // Revert the color and sorting order of the previously selected object
-            lastSelectedObject.spriteRenderer.color = new Color(0.2830189f, 0.1081346f, 0.1081346f); // Unselected
+            lastSelectedObject.spriteRenderer.color = Color.white; // Unselected
             lastSelectedObject.spriteRenderer.sortingOrder = 8; // Reset sorting order to original value
 
             // Change the color of the previously selected TextMeshPro back to white
@@ -336,14 +336,14 @@ public class CircularMovementManagerv2 : MonoBehaviour
                 var textMeshPro = numberTransform.GetComponent<TextMeshPro>();
                 if (textMeshPro != null)
                 {
-                    textMeshPro.color = Color.white; // Deselect text
+                    textMeshPro.color = Color.black; // Deselect text
                     textMeshPro.sortingOrder = 9; // Lower sorting order
                 }
             }
         }
 
         // Highlight the current selected object
-        obj.spriteRenderer.color = new Color(1.0f, 0.8591049f, 0.0f);  // highlighted
+        obj.spriteRenderer.color = Color.blue;  // highlighted
         obj.spriteRenderer.material.SetFloat("_Glossiness", 0.4f); // Optional: Add glossiness for effect
         obj.spriteRenderer.sortingOrder = 11; // Set higher sorting order to bring it on top
 
@@ -354,7 +354,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
             var currentTextMeshPro = currentNumberTransform.GetComponent<TextMeshPro>();
             if (currentTextMeshPro != null)
             {
-                currentTextMeshPro.color = Color.black; // Select text
+                currentTextMeshPro.color = Color.white; // Select text
                 currentTextMeshPro.sortingOrder = 12; // Higher sorting order to keep text on top
             }
         }
@@ -368,7 +368,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
         if (lastSelectedObject != null && lastSelectedObject != obj)
         {
             // Revert the color and sorting order of the previously selected object
-            lastSelectedObject.spriteRenderer.color = new Color(0.2830189f, 0.1081346f, 0.1081346f); // Unselected
+            lastSelectedObject.spriteRenderer.color = Color.grey; // Unselected
             lastSelectedObject.spriteRenderer.sortingOrder = 8; // Reset sorting order to original value
 
             // Change the color of the previously selected TextMeshPro back to white
@@ -378,14 +378,14 @@ public class CircularMovementManagerv2 : MonoBehaviour
                 var textMeshPro = numberTransform.GetComponent<TextMeshPro>();
                 if (textMeshPro != null)
                 {
-                    textMeshPro.color = Color.white; // Deselect text
+                    textMeshPro.color = Color.black; // Deselect text
                     textMeshPro.sortingOrder = 9; // Lower sorting order
                 }
             }
         }
 
         // Highlight the current selected object
-        obj.spriteRenderer.color = new Color(1.0f, 0.8591049f, 0.0f); // highlighted
+        obj.spriteRenderer.color = Color.blue; // highlighted
         obj.spriteRenderer.material.SetFloat("_Glossiness", 0.4f); // Optional: Add glossiness for effect
         obj.spriteRenderer.sortingOrder = 11; // Set higher sorting order to bring it on top
 
@@ -396,7 +396,7 @@ public class CircularMovementManagerv2 : MonoBehaviour
             var currentTextMeshPro = currentNumberTransform.GetComponent<TextMeshPro>();
             if (currentTextMeshPro != null)
             {
-                currentTextMeshPro.color = Color.black; // Select text
+                currentTextMeshPro.color = Color.white; // Select text
                 currentTextMeshPro.sortingOrder = 12; // Higher sorting order to keep text on top
             }
         }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // Ensure you have this for TextMeshPro
 using System.Collections.Generic;
 using extOSC;
 using System.IO;
@@ -11,8 +10,8 @@ public class FileManagerController : MonoBehaviour
     public Button saveButton;
     public Button loadButton;
     public Button deleteButton; // Button to delete selected file
-    public TMP_InputField fileNameInput; // For saving a new file
-    public TMP_Dropdown fileDropdown; // Dropdown for loading files
+    public InputField fileNameInput; // For saving a new file
+    public Dropdown fileDropdown; // Dropdown for loading files
     public OSCTransmitter Transmitter;
 
     private List<Vector3> savedPositions = new List<Vector3>();

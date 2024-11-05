@@ -1,10 +1,10 @@
 using System.Net;
 using UnityEngine;
-using TMPro; // Make sure to add this
+using UnityEngine.UI;
 
 public class DisplayLocalIPAddress : MonoBehaviour
 {
-    public TMP_Text ipDisplayText; // Assign a TextMeshPro UI component in the Inspector
+    public Text ipDisplayText; // Assign a TextMeshPro UI component in the Inspector
 
     void Start()
     {

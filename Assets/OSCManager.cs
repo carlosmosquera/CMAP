@@ -1,11 +1,11 @@
 using UnityEngine;
-using TMPro;
 using extOSC;
 using System.Collections;
+using UnityEngine.UI;
 
 public class OSCManager : MonoBehaviour
 {
-    public TMP_InputField ipInputField;
+    public InputField ipInputField;
     public OSCTransmitter[] oscTransmitters;
     public OSCTransmitter heartbeatTransmitter;
     public OSCReceiver heartbeatReceiver;
