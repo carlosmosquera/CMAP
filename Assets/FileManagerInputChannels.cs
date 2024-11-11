@@ -2,9 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro; // Ensure you have this for TextMeshPro
 using System.Collections.Generic;
-using extOSC;
 using System.IO;
-using System.Collections;
 
 public class FileManagerInputChannels : MonoBehaviour
 {
@@ -12,21 +10,19 @@ public class FileManagerInputChannels : MonoBehaviour
     public Button saveButton;
     public Button loadButton;
     public Button deleteButton; // Button to delete selected file
-    public TMP_InputField fileNameInput; // For saving a new file
-    public TMP_Dropdown fileDropdown; // Dropdown for loading files
-    public OSCTransmitter Transmitter;
+    public InputField fileNameInput; // For saving a new file
+    public Dropdown fileDropdown; // Dropdown for loading files
 
-    private List<Vector3> savedPositions = new List<Vector3>();
     private List<string> savedTexts = new List<string>(); // To store the text from InputFields
-    private Transform[] childTransforms;
+    private Transform[] textTransforms;
 
     void Start()
     {
         // Initialize child transforms array with all children of the Content parent
-        childTransforms = new Transform[content.transform.childCount];
+        textTransforms = new Transform[content.transform.childCount];
         for (int i = 0; i < content.transform.childCount; i++)
         {
-            childTransforms[i] = content.transform.GetChild(i);
+            textTransforms[i] = content.transform.GetChild(i);
         }
 
         // Assign button click events
@@ -53,7 +49,7 @@ public class FileManagerInputChannels : MonoBehaviour
         fileNameInput.text = fileDropdown.options[index].text;
     }
 
-    // Save the current positions and texts of all child objects with a specified file name
+    // Save the texts of all child objects with a specified file name
     void SaveData()
     {
         // Use the current input field text as the filename, regardless of dropdown selection
@@ -64,13 +60,10 @@ public class FileManagerInputChannels : MonoBehaviour
             return;
         }
 
-        // Clear previous saved positions and texts
-        savedPositions.Clear();
+        // Clear previous saved texts and store current texts
         savedTexts.Clear();
-
-        foreach (Transform child in childTransforms)
+        foreach (Transform child in textTransforms)
         {
-            savedPositions.Add(child.position);
             TMP_InputField inputField = child.GetComponentInChildren<TMP_InputField>();
             if (inputField != null)
             {
@@ -118,9 +111,11 @@ public class FileManagerInputChannels : MonoBehaviour
         }
     }
 
-    // Update the dropdown options with available saved files
     private void UpdateFileDropdown(string selectedFileName = null)
     {
+        // Ensure the UI has been fully updated before modifying the dropdown
+        Canvas.ForceUpdateCanvases();
+
         fileDropdown.ClearOptions();
         List<string> fileNames = new List<string>();
 
@@ -155,56 +150,33 @@ public class FileManagerInputChannels : MonoBehaviour
         }
     }
 
-    // Apply the loaded positions and texts to the child objects
+
+    // Apply the loaded texts to the child objects
     private void ApplyLoadedData()
     {
-        if (savedPositions.Count != childTransforms.Length || savedTexts.Count != childTransforms.Length)
+        if (savedTexts.Count != textTransforms.Length)
         {
-            Debug.LogWarning("No saved data or number of children has changed");
+            Debug.LogWarning("No saved texts or number of children has changed");
             return;
         }
 
-        for (int i = 0; i < childTransforms.Length; i++)
+        for (int i = 0; i < textTransforms.Length; i++)
         {
-            childTransforms[i].position = savedPositions[i];
-            TMP_InputField inputField = childTransforms[i].GetComponentInChildren<TMP_InputField>();
+            TMP_InputField inputField = textTransforms[i].GetComponentInChildren<TMP_InputField>();
             if (inputField != null)
             {
                 inputField.text = savedTexts[i];
             }
         }
 
-        // Send OSC messages for each object's position
-        StartCoroutine(SendPositionsViaOSC());
-        Debug.Log("Data loaded and sent via OSC");
+        Debug.Log("Data loaded");
     }
 
-    private IEnumerator SendPositionsViaOSC()
-    {
-        for (int i = 0; i < savedPositions.Count; i++)
-        {
-            // Calculate the polar float and send OSC
-            float outPolarFloat = Mathf.Atan2(savedPositions[i].y, savedPositions[i].x) * Mathf.Rad2Deg;
-            int outPolar = Mathf.RoundToInt((450 - outPolarFloat) % 360);
-            int objectNumber = i + 1;
-
-            var message = new OSCMessage("/objectPosition");
-            message.AddValue(OSCValue.Int(objectNumber));
-            message.AddValue(OSCValue.Int(outPolar));
-
-            Transmitter.Send(message);
-            Debug.Log($"Object {objectNumber} position: {outPolar} degrees");
-
-            // Optionally add a small delay between sends if needed
-            yield return new WaitForSeconds(0.1f); // Adjust this delay as needed
-        }
-    }
-
-    // Save positions and texts to a file with the specified file name
+    // Save texts to a file with the specified file name
     void SaveDataToFile(string fileName)
     {
         string filePath = Path.Combine(Application.persistentDataPath, $"{fileName}.json");
-        Data data = new Data { positions = savedPositions.ToArray(), texts = savedTexts.ToArray() };
+        Data data = new Data { texts = savedTexts.ToArray() };
         string jsonData = JsonUtility.ToJson(data);
         File.WriteAllText(filePath, jsonData);
     }
@@ -217,7 +189,6 @@ public class FileManagerInputChannels : MonoBehaviour
         {
             string jsonData = File.ReadAllText(filePath);
             Data data = JsonUtility.FromJson<Data>(jsonData);
-            savedPositions = new List<Vector3>(data.positions);
             savedTexts = new List<string>(data.texts);
             Debug.Log($"Data loaded from {fileName}");
         }
@@ -227,11 +198,10 @@ public class FileManagerInputChannels : MonoBehaviour
         }
     }
 
-    // Data structure to hold positions and texts for saving/loading
+    // Data structure to hold texts for saving/loading
     [System.Serializable]
     public class Data
     {
-        public Vector3[] positions;
         public string[] texts;
     }
 }

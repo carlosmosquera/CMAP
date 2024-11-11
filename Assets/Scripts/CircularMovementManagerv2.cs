@@ -108,7 +108,7 @@
                 }
             }
 
-            Debug.Log($"Total Slider Texts Found: {sliderTexts.Count}");
+            //Debug.Log($"Total Slider Texts Found: {sliderTexts.Count}");
 
             // Initialize the number for each object
             for (int i = 0; i < circularObjects.Count; i++)
@@ -177,7 +177,7 @@
             messagePan.AddValue(OSCValue.Int(ObjectNumber));
             messagePan.AddValue(OSCValue.Int(outPolar)); // Send outPolar as an integer
 
-            Debug.Log($"Object {ObjectNumber} position: {outPolar} degrees");
+            //Debug.Log($"Object {ObjectNumber} position: {outPolar} degrees");
 
             Transmitter.Send(messagePan);
 
@@ -291,7 +291,7 @@
                     messagePan.AddValue(OSCValue.Int(ObjectNumber));
                     messagePan.AddValue(OSCValue.Int(outPolar)); // Send outPolar as an integer
 
-                    Debug.Log($"Object {ObjectNumber} position: {outPolar} degrees");
+                    //Debug.Log($"Object {ObjectNumber} position: {outPolar} degrees");
 
                     Transmitter.Send(messagePan);
                 }
@@ -393,13 +393,13 @@
 
     void SelectSliderText(TMP_Text text)
     {
-        Debug.Log("SelectSliderText called");
+        //Debug.Log("SelectSliderText called");
         int index = sliderTexts.IndexOf(text);
-        Debug.Log($"Index of clicked text: {index}");
+        //Debug.Log($"Index of clicked text: {index}");
 
         if (index != -1)
         {
-            Debug.Log("Valid index found, highlighting text");
+            //Debug.Log("Valid index found, highlighting text");
 
             // Highlight the text
             if (lastSelectedSliderText != null)
@@ -409,7 +409,7 @@
 
             lastSelectedSliderText = sliderTexts[index];
             lastSelectedSliderText.color = Color.blue; // Highlighted
-            Debug.Log($"Highlighting slider text for object {index + 1}");
+            //Debug.Log($"Highlighting slider text for object {index + 1}");
 
             // Highlight the corresponding circular object
             if (index < circularObjects.Count)

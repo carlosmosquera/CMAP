@@ -42,13 +42,13 @@ public class OSCManager : MonoBehaviour
                 if (transmitter != null) // Check if transmitter is not destroyed
                 {
                     transmitter.RemoteHost = newIP;
-                    Debug.Log($"Updated OSC Transmitter on {transmitter.gameObject.name} to IP: {newIP}");
+                    //Debug.Log($"Updated OSC Transmitter on {transmitter.gameObject.name} to IP: {newIP}");
                 }
             }
             if (heartbeatTransmitter != null) // Check if heartbeat transmitter is not destroyed
             {
                 heartbeatTransmitter.RemoteHost = newIP;
-                Debug.Log($"Heartbeat transmitter set to IP: {newIP}");
+                //Debug.Log($"Heartbeat transmitter set to IP: {newIP}");
             }
         }
         else

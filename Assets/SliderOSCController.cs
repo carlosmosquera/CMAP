@@ -37,7 +37,7 @@ public class SliderOSCController : MonoBehaviour
         message.AddValue(OSCValue.Float(dBValue));
         oscTransmitter.Send(message);
 
-        Debug.Log($"Sent OSC Message with dB Value: {dBValue}");
+        //Debug.Log($"Sent OSC Message with dB Value: {dBValue}");
     }
 
     private void OnDestroy()
