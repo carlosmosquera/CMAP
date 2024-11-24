@@ -21,11 +21,11 @@ public class SliderOSCController : MonoBehaviour
 
     private void UpdateFaderValue(float sliderValue)
     {
-        // Map the slider value (0-1) to the dB range (-70 to 0)
-        float dBValue = Mathf.Lerp(-70, 0, Mathf.Pow(sliderValue, 2));
+        // Map the slider value (0-1) to the dB range (-70 to 0) using a logarithmic scale
+        float dBValue = Mathf.Lerp(-70, 0, Mathf.Log10(1 + 9 * sliderValue) / Mathf.Log10(10));
 
         // Display the dB value on the canvas
-        valueDisplay.text = $"{dBValue:F1} dB";
+        valueDisplay.text = $"{dBValue:F0} dB";
 
         // Send OSC message with the dB value
         SendOSCMessage(dBValue);
@@ -33,11 +33,13 @@ public class SliderOSCController : MonoBehaviour
 
     private void SendOSCMessage(float dBValue)
     {
+        int dBValueInt = (int)dBValue;
+
         var message = new OSCMessage(oscAddress);
-        message.AddValue(OSCValue.Float(dBValue));
+        message.AddValue(OSCValue.Int(dBValueInt));  // Use Int instead of Float
         oscTransmitter.Send(message);
 
-        //Debug.Log($"Sent OSC Message with dB Value: {dBValue}");
+        // Debug.Log($"Sent OSC Message with dB Value: {dBValueInt}");
     }
 
     private void OnDestroy()

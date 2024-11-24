@@ -432,7 +432,7 @@
                 float outPolarFloat = Mathf.Atan2(-lastSelectedObject.objectTransform.position.y, lastSelectedObject.objectTransform.position.x) * Mathf.Rad2Deg;
                 float currentAngle = (outPolarFloat + 90 + 360) % 360; // Add 90 degrees to offset zero to the top
 
-                Debug.Log($"Current Angle: {currentAngle}");
+                //Debug.Log($"Current Angle: {currentAngle}");
                 float closestAngle = float.NaN;
                 float minDifference = float.MaxValue;
 
